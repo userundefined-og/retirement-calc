@@ -42,6 +42,9 @@ func main() {
 	log.Println("Year Brokerage IRA Expenses")
 	for year := time.Now().Year(); year <= 2100; year++ {
 		log.Printf("%v %v %v %v\n", year, brokerage.value, ira.value, expenses)
+		if brokerage.value <= 0 && ira.value <= 0 {
+			break
+		}
 		expenses = int64(float64(expenses) * (1 + inflationRate))
 		brokerage.value = int64(float64(brokerage.value) * (1.0 + brokerage.growthRate))
 		ira.value = int64(float64(ira.value) * (1.0 + ira.growthRate))
