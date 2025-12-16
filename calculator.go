@@ -16,32 +16,6 @@ type account struct {
 	growthRate float64
 }
 
-func getenvDollars(key string) int64 {
-	valStr := os.Getenv(key)
-	if valStr == "" {
-		log.Fatalf("missing env var: %v", key)
-	}
-	var val int64
-	_, err := fmt.Sscanf(valStr, "%d", &val)
-	if err != nil {
-		log.Fatalf("unparsable env var: %v = %v", key, valStr)
-	}
-	return val * 100
-}
-
-func getenvFloat(key string) float64 {
-	valStr := os.Getenv(key)
-	if valStr == "" {
-		log.Fatalf("missing env var: %v", key)
-	}
-	var val float64
-	_, err := fmt.Sscanf(valStr, "%f", &val)
-	if err != nil {
-		log.Fatalf("unparsable env var: %v = %v", key, valStr)
-	}
-	return val
-}
-
 // Requires a .env file with the variables as seen below and gnuplot for plotting.
 func main() {
 	err := godotenv.Load()
@@ -112,4 +86,30 @@ func main() {
 	} else {
 		fmt.Println("Gnuplot command executed successfully.")
 	}
+}
+
+func getenvDollars(key string) int64 {
+	valStr := os.Getenv(key)
+	if valStr == "" {
+		log.Fatalf("missing env var: %v", key)
+	}
+	var val int64
+	_, err := fmt.Sscanf(valStr, "%d", &val)
+	if err != nil {
+		log.Fatalf("unparsable env var: %v = %v", key, valStr)
+	}
+	return val * 100
+}
+
+func getenvFloat(key string) float64 {
+	valStr := os.Getenv(key)
+	if valStr == "" {
+		log.Fatalf("missing env var: %v", key)
+	}
+	var val float64
+	_, err := fmt.Sscanf(valStr, "%f", &val)
+	if err != nil {
+		log.Fatalf("unparsable env var: %v = %v", key, valStr)
+	}
+	return val
 }
