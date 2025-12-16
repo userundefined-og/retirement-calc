@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -39,7 +40,7 @@ func main() {
 
 	log.SetFlags(0)
 	log.Println("Year Brokerage IRA Expenses")
-	for year := 2026; year <= 2080; year++ {
+	for year := time.Now().Year(); year <= 2100; year++ {
 		log.Printf("%v %v %v %v\n", year, brokerage.value, ira.value, expenses)
 		expenses = int64(float64(expenses) * (1 + inflationRate))
 		brokerage.value = int64(float64(brokerage.value) * (1.0 + brokerage.growthRate))
@@ -65,7 +66,7 @@ func main() {
 	w.Flush()
 	f.Close()
 
-	cmd := exec.Command("C:/Program Files/gnuplot/bin/gnuplot.exe", "output.plt")
+	cmd := exec.Command(getenvOrDie("gnuplot_path"), "output.plt")
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
@@ -88,11 +89,16 @@ func main() {
 	}
 }
 
-func getenvDollars(key string) int64 {
-	valStr := os.Getenv(key)
-	if valStr == "" {
+func getenvOrDie(key string) string {
+	val := os.Getenv(key)
+	if val == "" {
 		log.Fatalf("missing env var: %v", key)
 	}
+	return val
+}
+
+func getenvDollars(key string) int64 {
+	valStr := getenvOrDie(key)
 	var val int64
 	_, err := fmt.Sscanf(valStr, "%d", &val)
 	if err != nil {
@@ -102,10 +108,7 @@ func getenvDollars(key string) int64 {
 }
 
 func getenvFloat(key string) float64 {
-	valStr := os.Getenv(key)
-	if valStr == "" {
-		log.Fatalf("missing env var: %v", key)
-	}
+	valStr := getenvOrDie(key)
 	var val float64
 	_, err := fmt.Sscanf(valStr, "%f", &val)
 	if err != nil {
